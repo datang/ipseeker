@@ -6,8 +6,18 @@ import net.sf.json.JSONObject;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.params.ClientPNames;
+import org.apache.http.cookie.Cookie;
+import org.apache.http.cookie.CookieOrigin;
+import org.apache.http.cookie.CookieSpec;
+import org.apache.http.cookie.CookieSpecFactory;
+import org.apache.http.cookie.MalformedCookieException;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.impl.cookie.BrowserCompatSpec;
+import org.apache.http.params.HttpConnectionParams;
+import org.apache.http.params.HttpParams;
 import org.apache.http.util.EntityUtils;
 import org.apache.log4j.Logger;
 
@@ -33,6 +43,12 @@ public class BaiduIpLocation implements IIpSeeker {
 	 */
 	private static final String COOR = "bd09ll";
 
+	private HttpClient httpClient;
+
+	public BaiduIpLocation() {
+		httpClient = this.getHttpClient();
+	}
+
 	@Override
 	public Entry search(String ip) {
 		String url = URL + "?ak=" + AK + "&coor=" + COOR + "ip=" + ip;
@@ -43,14 +59,15 @@ public class BaiduIpLocation implements IIpSeeker {
 		// 建立HttpPost对象
 		HttpResponse response;
 		try {
-			response = new DefaultHttpClient().execute(httpget);
+			// response = new DefaultHttpClient().execute(httpget);
+			response = httpClient.execute(httpget);
 			// 发送GET,并返回一个HttpResponse对象，相对于POST，省去了添加NameValuePair数组作参数
 			if (response.getStatusLine().getStatusCode() == 200) {// 如果状态码为200,就是正常返回
 				String result = EntityUtils.toString(response.getEntity());
 				// 得到返回的字符串
 				if (result != null) {
 					JSONObject json = JSONObject.fromObject(result);
-//					logger.info(json);
+					// logger.info(json);
 					int status = json.getInt("status");
 					if (status == 0) {
 						JSONObject content = json.getJSONObject("content");
@@ -81,6 +98,27 @@ public class BaiduIpLocation implements IIpSeeker {
 
 		return entry;
 	}
+
+	public HttpClient getHttpClient() {
+		DefaultHttpClient httpClient = new DefaultHttpClient();
+		httpClient.getCookieSpecs().register("easy", csf);
+		httpClient.getParams().setParameter(ClientPNames.COOKIE_POLICY, "easy");
+		HttpConnectionParams.setConnectionTimeout(httpClient.getParams(), 2000);
+		return httpClient;
+	}
+
+	// customer cookie policy, ignore cookie check
+	CookieSpecFactory csf = new CookieSpecFactory() {
+		public CookieSpec newInstance(HttpParams params) {
+			return new BrowserCompatSpec() {
+				@Override
+				public void validate(Cookie cookie, CookieOrigin origin)
+						throws MalformedCookieException {
+					// Oh, I am easy
+				}
+			};
+		}
+	};
 
 	public static void main(String[] args) {
 		IIpSeeker ips = new BaiduIpLocation();

@@ -12,8 +12,8 @@ import com.weidou.ip.seeker.TaobaoIpSearch;
 public class Test {
 
 	public static void main(String[] args) throws IOException {
-		IIpSeeker ips = new TaobaoIpSearch();
-//		IIpSeeker ips = new BaiduIpLocation();
+//		IIpSeeker ips = new TaobaoIpSearch();
+		IIpSeeker ips = new BaiduIpLocation();
 
 		BufferedReader br = new BufferedReader(new InputStreamReader(Test.class
 				.getClassLoader().getResourceAsStream("ips")));
