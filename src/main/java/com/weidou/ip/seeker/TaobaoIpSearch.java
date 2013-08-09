@@ -46,7 +46,15 @@ public class TaobaoIpSearch implements IIpSeeker {
 					int code = json.getInt("code");
 					if (code == 0) {
 						JSONObject data = json.getJSONObject("data");
-						entry = new Entry(data);
+						entry = new Entry();
+						entry.setIp(data.getString("ip"));
+						entry.setCountry(data.getString("country"));
+						entry.setArea(data.getString("area"));
+						entry.setRegion(data.getString("region"));
+						entry.setCity(data.getString("city"));
+						entry.setCounty(data.getString("county"));
+						entry.setIsp(data.getString("isp"));
+						
 					} else {
 						logger.info("获取ip信息错误，错误信息：" + json.getString("data"));
 					}

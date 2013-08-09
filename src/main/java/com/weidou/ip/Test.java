@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 
 import com.weidou.ip.domain.Entry;
+import com.weidou.ip.seeker.BaiduIpLocation;
 import com.weidou.ip.seeker.IIpSeeker;
 import com.weidou.ip.seeker.TaobaoIpSearch;
 
@@ -12,6 +13,7 @@ public class Test {
 
 	public static void main(String[] args) throws IOException {
 		IIpSeeker ips = new TaobaoIpSearch();
+//		IIpSeeker ips = new BaiduIpLocation();
 
 		BufferedReader br = new BufferedReader(new InputStreamReader(Test.class
 				.getClassLoader().getResourceAsStream("ips")));
@@ -23,10 +25,11 @@ public class Test {
 			line = br.readLine().trim();
 			if (line != null && line.isEmpty() != true) {
 				Entry entry = ips.search(line);
-				System.out.println(entry.getIp() + "\t" + entry.getCountry()
-						+ "\t" + entry.getArea() + "\t" + entry.getRegion()
-						+ "\t" + entry.getCity() + "\t" + entry.getCounty()
-						+ "\t" + entry.getIsp());
+				System.out.println(entry);
+//				System.out.println(entry.getIp() + "\t" + entry.getCountry()
+//						+ "\t" + entry.getArea() + "\t" + entry.getRegion()
+//						+ "\t" + entry.getCity() + "\t" + entry.getCounty()
+//						+ "\t" + entry.getIsp());
 			}
 		}
 		br.close();

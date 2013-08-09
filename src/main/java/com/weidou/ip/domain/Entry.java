@@ -15,17 +15,9 @@ public class Entry {
 	private String region; // 省
 	private String city; // 市
 	private String county; // 区、县
+	private String street; // 街道
 	private String isp; // 运营商
-
-	public Entry(JSONObject json) {
-		this.setIp(json.getString("ip"));
-		this.setCountry(json.getString("country"));
-		this.setArea(json.getString("area"));
-		this.setRegion(json.getString("region"));
-		this.setCity(json.getString("city"));
-		this.setCounty(json.getString("county"));
-		this.setIsp(json.getString("isp"));
-	}
+	private String point; // 经纬度坐标值
 
 	public String getIp() {
 		return ip;
@@ -83,6 +75,22 @@ public class Entry {
 		this.isp = isp;
 	}
 	
+	public String getStreet() {
+		return street;
+	}
+
+	public void setStreet(String street) {
+		this.street = street;
+	}
+
+	public String getPoint() {
+		return point;
+	}
+
+	public void setPoint(String point) {
+		this.point = point;
+	}
+
 	public JSONObject toJSONObject() {
 		JSONObject json = new JSONObject();
 		json.put("ip", this.ip);
@@ -91,7 +99,9 @@ public class Entry {
 		json.put("region", this.region);
 		json.put("city", this.city);
 		json.put("county", this.county);
+		json.put("street", this.street);
 		json.put("isp", this.isp);
+		json.put("point", this.point);
 		return json;
 	}
 
